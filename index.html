@@ -70,11 +70,28 @@
 				for (var j = 0; j < expo; j++) {
 					var cell = row.insertCell(-1);
 					cell.innerHTML = i + ":" + j; // fill cells initial values
-					
+
+					// divides the table 3 by 3
+					switch (i % area) {
+						case 0:
+							cell.addClass("top");
+						break;
+						case area - 1:
+							cell.addClass("bottom");
+						break;
+					}
+					switch (j % area) {
+						case 0:
+							cell.addClass("left");
+						break;
+						case area - 1:
+							cell.addClass("right");
+						break;
+					}					
 				}
 			}
 			that.table = table;  // creating a global context for table variable 
-
+			that.expo = expo;
 		}
 
 		// invoke app
