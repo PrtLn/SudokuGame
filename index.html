@@ -94,6 +94,22 @@
 			that.expo = expo;
 		}
 
+		// describes a prototype for the type of Sudoku
+		app.Sudoku.prototype = {
+			// the method fills the playing field values from the two-dimensional array of values
+			fill : function(values) {
+				var that = this;
+				that.values = values;
+				for (var i = 0; i < that.expo; i++) {
+					var row = that.table.rows[i];
+					for (var j = 0; j < that.expo; j++) {
+						var cell = that.table.rows[i].cells[j];
+							cell.innerHTML = values[i][j];
+					}
+				}
+			}
+		}
+
 		// invoke app
 		var tbl = new app.Sudoku();
 		document.body.appendChild(tbl.table);
