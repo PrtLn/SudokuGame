@@ -11,6 +11,15 @@
 	<div id="playGround"></div></dir>
 
 	<script>
+
+		var util = {
+           // function generates a random number of whole min max inclusive range
+            randomInteger: function(min, max)
+            {
+                return Math.floor(min + Math.random() * (max + 1 - min));
+            }
+        }
+
 		// expanding the base type function, adding a method to declare new methods
 		Function.prototype.method = function(name, func) 
 		{
@@ -30,6 +39,12 @@
 			}
 			return this;
 		});
+
+		// the method removes and returns a random array member (is similar shift and pop)
+        Array.method("popRandom", function()
+        {
+            return this.splice(Math.floor(Math.random() * this.length), 1)[0];
+        });
 
 		// the method adds a DOM`s element name of the class and checking for the existence of (like jQuery framewopk)
 		Element.method("addClass", function(className) 
@@ -119,6 +134,7 @@
 			var expo = area * area;
 			var base = [].fillIncrement(expo, 1);
 			var values = [];
+
 			// create a baseline grid
 			for (var i = 0; i < expo; i++) {
 				var row = [];
@@ -135,11 +151,80 @@
 				that.area = area;
 		}
 
+		// describes a prototype methods for mixing numbers
+		app.Generator.prototype = {
+
+			// flip by horizontal
+			invertHorizontal : function()
+			{
+                var that = this;
+                for (var i = 0 ; i < that.expo ; i++){
+                    that.values[i].reverse();
+                }
+                return that;
+            },
+
+            // flip by vertical
+            invertVertical : function(){
+               var that = this;
+               that.values.reverse();
+               return that;
+            },
+
+            // returns the two random numbers from a field of the range length
+            getPositions: function()
+            {
+                var source = [].fillIncrement(this.area);
+                var positions = {
+                    startPos: source.popRandom(),
+                    destPos: source.popRandom()
+                }
+                return positions;
+            },
+
+            // mixing rows
+            swapRows: function(count)
+            {
+            	var that = this;
+            	for (var i = 0; i < count; i++) {
+            		var area = util.randomInteger(0, that.area - 1);
+                    var values = that.getPositions();
+                    var sourcePosition = area * that.area + values.startPos;
+                    var destPosition = area * that.area + values.destPos;
+                    var row = that.values.splice(sourcePosition, 1)[0];
+                    that.values.splice(destPosition, 0, row);
+                }                   
+                return that;               
+            },
+                              
+            // mixing columns
+	        swapColumns: function(count)
+            {
+                var that = this;
+                for (var i = 0; i < count; i++) {
+                    var area = util.randomInteger(0, that.area - 1);
+                    var values = that.getPositions();
+                    var sourcePosition = area * that.area + values.startPos;
+                    var destPosition = area * that.area + values.destPos;
+                    for (var j = 0; j < that.expo ; j++) {
+                        var cell = that.values[j].splice(sourcePosition, 1)[0];
+                        that.values[j].splice(destPosition, 0, cell);
+                    }
+                }
+                return that;
+            }    
+		}
+
+
 		// invoke app
 		var tbl = new app.Sudoku();
 		document.body.appendChild(tbl.table);
 		// invoke the fill method for table through generator class
 		var generator = new app.Generator();
+
+		// mixing rows and columns through swapRows method
+		generator.invertHorizontal().invertVertical().swapRows(10);
+
 		tbl.fill(generator.values);
 
 	</script>
