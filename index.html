@@ -90,7 +90,8 @@
 					}					
 				}
 			}
-			that.table = table;  // creating a global context for table variable 
+			// creating a global context for table and expo variables
+			that.table = table;  
 			that.expo = expo;
 		}
 
@@ -110,9 +111,36 @@
 			}
 		}
 
+		// Create a constructor for type Generator, which will be responsible for the generation of the basic values and mixing techniques
+		app.Generator = function(area) 
+		{
+			var that = this;
+			var area = area || 3;
+			var expo = area * area;
+			var base = [].fillIncrement(expo, 1);
+			var values = [];
+			// create a baseline grid
+			for (var i = 0; i < expo; i++) {
+				var row = [];
+				// offset the base array by 1 to each row
+				var start = (i % area) * area + parseInt(i / area, 10);
+					for (var j = 0; j < expo; j++) {
+						row.push(base.slice(start, expo).concat(base)[j]);
+					}
+					values.push(row);
+				}
+				// the variables available from the outside
+				that.values = values;  
+				that.expo = expo;
+				that.area = area;
+		}
+
 		// invoke app
 		var tbl = new app.Sudoku();
 		document.body.appendChild(tbl.table);
+		// invoke the fill method for table through generator class
+		var generator = new app.Generator();
+		tbl.fill(generator.values);
 
 	</script>
 

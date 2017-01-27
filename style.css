@@ -10,7 +10,7 @@ html {
 .sudoku {
 	display: inline-table;
 	border: solid 4px;
-	border-spacing: 1px;
+	border-collapse: collapse;
 }
 .sudoku td {
 	border: solid 1px;
