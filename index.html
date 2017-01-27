@@ -10,9 +10,78 @@
 	
 	<div id="playGround"></div></dir>
 
-<script>
-	
+	<script>
+		// expanding the base type function, adding a method to declare new methods
+		Function.prototype.method = function(name, func) 
+		{
+			if (!this.prototype[name]) {
+				this.prototype[name] = func;
+				return this;
+			}
+		};
 
-</script>
+		// the method fills an array of values in ascending order, starting from startValue
+		Array.method('fillIncrement', function(length, startValue) 
+		{
+			startValue = startValue || 0;  // either start value either 0 by default
+
+			for (var i = 0; i < length; i++) {
+				this.push(i + startValue);
+			}
+			return this;
+		});
+
+		// the method adds a DOM`s element name of the class and checking for the existence of (like jQuery framewopk)
+		Element.method("addClass", function(className) 
+		{
+			var classes = this.className.split(" "); // splits classes to arrays
+			if (classes.indexOf(className) < 0) {    // adds class if it not exists
+				classes.push(className);
+				this.className = classes.join(" ").trim();
+			}
+		});
+
+		// the method removes a DOM`s element name of the class and checking for the existence of (like jQuery framewopk)
+		Element.method("removeClass", function(className) 
+		{
+			var classes = this.className.split(" ");
+			var index = classes.indexOf(className);
+			if (index >= 0) {
+				classes.splice(index, 1);  // removes the element by index
+				this.className = classes.join(" ").trim();
+			}
+			return this;
+		});
+
+		var app = {}; // create a global object that is responsible for our application
+
+		// creating first class - Sudoku
+		app.Sudoku = function(area) 
+		{
+			var that = this;
+			var area = area || 3;
+			var table = document.createElement("table");
+
+			table.addClass("sudoku");  // adds class through the interface		
+			var expo = area * area;    // variable expo (exponential)
+ 
+			for (var i = 0; i < expo; i++) {
+				var row = table.insertRow(-1);   // -1 -> insert in the begin of the stroke
+				for (var j = 0; j < expo; j++) {
+					var cell = row.insertCell(-1);
+					cell.innerHTML = i + ":" + j; // fill cells initial values
+					
+				}
+			}
+			that.table = table;  // creating a global context for table variable 
+
+		}
+
+		// invoke app
+		var tbl = new app.Sudoku();
+		document.body.appendChild(tbl.table);
+
+	</script>
+
 </body>
 </html>
